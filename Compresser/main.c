@@ -8,7 +8,7 @@
 #include "Compressor.h"
 #include "Decompressor.h"
 
-#define DEBUG 1 // Change here to '0' if you don't want to see the Debug Informations.
+#define DEBUG 0 // Change here to '1' if you want to see the Debug Informations.
 #define ShowChangedPosition 1 // Change here to '0' if you don't want to see how the Position from a Words Changed by the Compression
 /*
  * MIT License
