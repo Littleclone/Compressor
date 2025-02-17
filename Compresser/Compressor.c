@@ -38,10 +38,7 @@ int Compress(unsigned char input[], struct entry** ptr_to_ptr) {
 			++foundChar;
 			hasWord = true;
 		}
-		// TODO: Alles was ein Wort beendet soll hier am ende sein. (Bessere lösung finden) (Vielleicht einfach nur ein else?)
-		else if ((*(input + i) == ' ' || *(input + i) == '\n' || *(input + i) == ',' || *(input + i) == '.' || *(input + i) == '(' || *(input + i) == ')'
-			|| *(input + i) == '[' || *(input + i) == ']' || *(input + i) == '{' || *(input + i) == '}' || *(input + i) == '?' || *(input + i) == '!'
-			|| *(input + i) == ';' || *(input + i) == ':') && hasWord) {
+		else if (!(IsCharOrDigit(*(input + i))) && hasWord) {
 			++counter;
 			hasWord = false;
 			unsigned char* word = (unsigned char*)malloc(foundChar + 1);
@@ -136,6 +133,16 @@ unsigned char* GetCompressString(unsigned char input[], int newLenght) {
 			++i;
 			++j;
 		}
+		if (*(input + (i - 1)) == '[') {
+			int x = i;
+			while (*(input + x) != ']') {
+				if (*(input + x) == '[') {
+					*(newInput + j) = ';';
+					++j;
+				}
+				++x;
+			}
+		}
 	}
 	*(newInput + j) = '\0';
 	return newInput;
@@ -165,6 +172,10 @@ void verifyRefferences(unsigned char input[], struct entry** ptr_to_ptr, bool sh
 					j = i + 1;
 					int rightDigit = 0, counterNewPos = 0, temp = ptr->newPosition, num = ptr->newPosition;
 					int* chars = (int*)malloc((counter + 1) * sizeof(int));
+					// TODO: Error_Handler needed (also for all other possibles in this Project)
+					if (chars == NULL) {
+						return;
+					}
 					while (temp != 0) {
 						temp /= 10;
 						++counterNewPos;
@@ -172,7 +183,7 @@ void verifyRefferences(unsigned char input[], struct entry** ptr_to_ptr, bool sh
 					do {
 						rightDigit = num % 10;
 						num = num / 10;
-						chars[temp] = rightDigit;
+						chars[temp] = rightDigit; // Warum Overflow?
 						++temp;
 					} while (num != 0);
 					if (counter != counterNewPos) {
@@ -187,10 +198,7 @@ void verifyRefferences(unsigned char input[], struct entry** ptr_to_ptr, bool sh
 				}
 			}
 		}
-		// TODO: Alles was ein Wort beendet soll hier am ende sein. (Bessere lösung finden) (Vielleicht einfach nur ein else?)
-		else if ((*(input + i) == ' ' || *(input + i) == '\n' || *(input + i) == ',' || *(input + i) == '.' || *(input + i) == '(' || *(input + i) == ')'
-			|| *(input + i) == '[' || *(input + i) == ']' || *(input + i) == '{' || *(input + i) == '}' || *(input + i) == '?' || *(input + i) == '!'
-			|| *(input + i) == ';' || *(input + i) == ':') && hasWord) {
+		else if (!(IsCharOrDigit(*(input + i))) && hasWord) {
 			hasWord = false;
 			unsigned char* word = (unsigned char*)malloc(foundChar + 1);
 			if (word == NULL) {
@@ -223,5 +231,5 @@ void verifyRefferences(unsigned char input[], struct entry** ptr_to_ptr, bool sh
 		}
 		++i;
 	}
-	printf("References that had to be reset: %i\nReferences that could remain as they are: %i\nReferences who get the new position: %i\n", oldRefference, sameRefference, changedRefferenzes);
+	printf("Words that had a old Refference Position: %i\nReferences that could remain as they are: %i\nReferences who get the new position: %i\n", oldRefference, sameRefference, changedRefferenzes);
 }

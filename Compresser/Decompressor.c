@@ -32,12 +32,14 @@ int decompress(unsigned char* input, struct entry** ptr_to_ptr) {
 					++j;
 				}
 				int temp = position, count = 0; 
+				// Was mach ich hier? Bzw. Wieso ist das so? [Vielleicht um sicherzugehen das es der anfang des wortes ist]
 				while (IsCharOrDigit(*(input + temp))) {
 					--temp;
 					--position;
 				}
 				++temp;
 				++position;
+				// Größe des Strings erhalten
 				while (IsCharOrDigit(*(input + temp))) {
 					++temp;
 					++count;
@@ -48,6 +50,7 @@ int decompress(unsigned char* input, struct entry** ptr_to_ptr) {
 					return 0;
 				}
 				count = 0; 
+				// String übertragen
 				while (IsCharOrDigit(*(input + position))) {
 					*(word + count) = *(input + position);
 					++position;
@@ -126,6 +129,9 @@ unsigned char* GetDecompressString(unsigned char* input, unsigned int lenght, st
 			}
 			
 
+		}
+		else if (*(input + i) == ';') {
+			++i;
 		}
 		else {
 			*(newInput + j) = *(input + i);
